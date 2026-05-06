@@ -30,12 +30,20 @@ public:
   MinimalTimer()
   : Node("minimal_timer")
   {
-    auto timer_callback = [this]() -> void {RCLCPP_INFO(this->get_logger(), "Hello, world!");};
+    auto timer_callback = [this]() -> void {
+      RCLCPP_INFO(this->get_logger(), "Hello, world!");
+      count_++;
+      if (count_ > 10) {
+        RCLCPP_INFO(this->get_logger(), "Timer finished, shutting down.");
+        rclcpp::shutdown();
+      }
+    };
     timer_ = create_wall_timer(500ms, timer_callback);
   }
 
 private:
   rclcpp::TimerBase::SharedPtr timer_;
+  int count_ = 0;
 };
 
 int main(int argc, char * argv[])
